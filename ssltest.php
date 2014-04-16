@@ -22,7 +22,7 @@ if( false == ($s = socket_create(AF_INET, SOCK_STREAM, SOL_TCP) ) )
 	exit("Unable to create socket!");
 
 function h2bin( $x ) {
-	$x = str_replace( array(" ", "\n"), array("", ""), $x);
+	$x = str_replace( array(" ", "\n"), "", $x);
 	return hex2bin($x);
 }
 $hello = h2bin("16 03 02 00  dc 01 00 00 d8 03 02 53
