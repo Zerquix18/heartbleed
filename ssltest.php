@@ -18,7 +18,6 @@ $data = array(
 		$argv[0],
 		array_key_exists(1, $argv) && is_numeric($argv[1]) ? $argv[1] : 443
 	);
-/** let's make a socket connection ... */
 if( false == ($s = socket_create(AF_INET, SOCK_STREAM, SOL_TCP) ) )
 	exit("Unable to create socket!");
 
@@ -134,7 +133,6 @@ echo "Connecting to socket...\n";
 $s = socket_connect( $s, $data[0], $data[1] );
 if( ! $s )
 	exit("Error [". socket_last_error() . "]: " . socket_strerror( socket_last_error() ) );
-echo "Sending client hello...\n";
 echo "Sending client hello...\n";
 socket_send($s, $hello, strlen($hello), 0 );
 ob_flush();
